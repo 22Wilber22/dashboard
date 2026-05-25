@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIDO Dashboard</title>
+  <meta name="description" content="Dashboard ejecutivo LIDO El Salvador" />
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #f3f4f6; }
+  </style>
+</head>
+<body>
+  <div id="app">Cargando dashboard...</div>
+  <script type="module">
+    const dashboardFile = './lido_dashboard_rediseno.html';
+
+    async function loadDashboard() {
+      const response = await fetch(dashboardFile);
+      const html = await response.text();
+      const content = html.replace(/<script[\s\S]*?<\/script>/gi, '');
+      document.body.innerHTML = content;
+      await import('./src/main.js');
+    }
+
+    loadDashboard().catch((error) => {
+      document.getElementById('app').textContent = 'No se pudo cargar el dashboard.';
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
