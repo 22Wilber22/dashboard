@@ -1,0 +1,441 @@
+
+<h2 class="sr-only">Dashboard ejecutivo de Business Intelligence LIDO El Salvador — paleta corporativa roja, blanca y gris.</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --lido-red:#C8102E;
+  --lido-red-dark:#9B0C22;
+  --lido-red-light:#F5E0E4;
+  --lido-red-mid:#E8435A;
+  --lido-white:#FFFFFF;
+  --lido-gray-50:#F7F7F8;
+  --lido-gray-100:#EBEBED;
+  --lido-gray-200:#D2D2D6;
+  --lido-gray-400:#9393A0;
+  --lido-gray-600:#5A5A66;
+  --lido-gray-800:#2A2A33;
+  --lido-gray-900:#111118;
+  --lido-success:#2E7D32;
+  --lido-warning:#B45309;
+  --lido-info:#1565C0;
+}
+body,.db{font-family:var(--font-sans,'Segoe UI',sans-serif);background:transparent;}
+
+.db-header{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  background:var(--lido-red);border-radius:12px;padding:14px 20px;margin-bottom:12px;
+}
+.db-logo-wrap{display:flex;align-items:center;gap:12px;}
+.db-logo{
+  width:44px;height:44px;border-radius:8px;background:var(--lido-white);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:18px;font-weight:700;color:var(--lido-red);letter-spacing:-1px;
+}
+.db-title{font-size:16px;font-weight:500;color:var(--lido-white);}
+.db-subtitle{font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px;}
+.db-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.db-select{
+  font-size:12px;padding:5px 10px;border-radius:8px;
+  border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.15);
+  color:var(--lido-white);cursor:pointer;min-width:120px;
+}
+.db-select option{background:var(--lido-gray-800);color:var(--lido-white);}
+.db-live{
+  font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500;
+  background:rgba(255,255,255,0.2);color:var(--lido-white);
+  display:flex;align-items:center;gap:5px;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.db-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.db-tab{
+  font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--lido-gray-200);background:var(--lido-white);
+  color:var(--lido-gray-600);display:flex;align-items:center;gap:5px;
+  transition:all 0.15s;
+}
+.db-tab:hover{border-color:var(--lido-red);color:var(--lido-red);}
+.db-tab.active{background:var(--lido-red);color:var(--lido-white);border-color:var(--lido-red);}
+
+.section{display:none;}
+.section.active{display:block;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px;}
+.kpi{
+  background:var(--lido-white);border-radius:10px;padding:14px;
+  border:1px solid var(--lido-gray-100);position:relative;overflow:hidden;
+}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.kpi-icon{width:32px;height:32px;border-radius:8px;background:var(--lido-red-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.kpi-icon i{font-size:16px;color:var(--lido-red);}
+.kpi-label{font-size:11px;color:var(--lido-gray-400);line-height:1.3;}
+.kpi-val{font-size:22px;font-weight:500;color:var(--lido-gray-800);line-height:1.1;}
+.kpi-trend{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:3px;}
+.t-up{color:var(--lido-success);}
+.t-down{color:var(--lido-red);}
+.t-neu{color:var(--lido-gray-400);}
+.kpi-bar{position:absolute;bottom:0;left:0;right:0;height:3px;}
+.bar-red{background:var(--lido-red);}
+.bar-gray{background:var(--lido-gray-200);}
+.bar-green{background:#4CAF50;}
+.bar-amber{background:#F59E0B;}
+.bar-blue{background:#2563EB;}
+
+.chart-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-bottom:12px;}
+.card{
+  background:var(--lido-white);border:1px solid var(--lido-gray-100);
+  border-radius:12px;padding:16px;
+}
+.card-full{grid-column:1/-1;}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:500;color:var(--lido-gray-800);}
+.card-desc{font-size:11px;color:var(--lido-gray-400);margin-top:2px;}
+.card-badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;background:var(--lido-red-light);color:var(--lido-red);}
+.chart-wrap{position:relative;width:100%;}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--lido-gray-600);margin-bottom:8px;}
+.ld{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+.insight{
+  background:var(--lido-red-light);border:1px solid rgba(200,16,46,0.2);
+  border-radius:10px;padding:10px 14px;font-size:12px;color:var(--lido-red-dark);
+  display:flex;gap:8px;align-items:flex-start;margin-bottom:12px;line-height:1.5;
+}
+.insight i{font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.tbl-card{background:var(--lido-white);border:1px solid var(--lido-gray-100);border-radius:12px;padding:16px;margin-bottom:12px;overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{text-align:left;padding:7px 10px;color:var(--lido-gray-400);font-weight:500;border-bottom:1px solid var(--lido-gray-100);background:var(--lido-gray-50);}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--lido-gray-100);color:var(--lido-gray-800);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--lido-gray-50);}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
+.p-r{background:var(--lido-red-light);color:var(--lido-red-dark);}
+.p-g{background:#DCFCE7;color:#15803D;}
+.p-a{background:#FEF3C7;color:#92400E;}
+.p-b{background:#DBEAFE;color:#1E40AF;}
+.pgb{background:var(--lido-gray-100);border-radius:4px;height:7px;width:100%;}
+.pgbf{height:7px;border-radius:4px;}
+
+.bi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:12px;}
+.bi-c{
+  background:var(--lido-white);border:1px solid var(--lido-gray-100);border-radius:12px;
+  padding:16px;border-top:3px solid var(--lido-red);
+}
+.bi-icon{font-size:20px;color:var(--lido-red);margin-bottom:8px;}
+.bi-t{font-size:13px;font-weight:500;color:var(--lido-gray-800);margin-bottom:4px;}
+.bi-b{font-size:12px;color:var(--lido-gray-600);line-height:1.5;}
+.chip-alert{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:20px;background:#FEF3C7;color:#92400E;font-weight:500;}
+</style>
+
+<div class="db">
+
+<div class="db-header">
+  <div class="db-logo-wrap">
+    <div class="db-logo">L</div>
+    <div>
+      <div class="db-title">LIDO El Salvador — Business Intelligence</div>
+      <div class="db-subtitle">Dashboard ejecutivo · Cadena de cafeterías y pastelerías · Mayo 2025</div>
+    </div>
+  </div>
+  <div class="db-filters">
+    <select class="db-select" id="filterSuc" onchange="applyFilter()">
+      <option value="all">Todas las sucursales</option>
+      <option value="mpl">Multiplaza</option>
+      <option value="met">Metrocentro</option>
+      <option value="san">Santa Ana</option>
+      <option value="smg">San Miguel</option>
+    </select>
+    <select class="db-select">
+      <option>Q2 2025</option><option>Q1 2025</option><option>Q3 2025</option>
+    </select>
+    <select class="db-select">
+      <option>Todos los productos</option><option>Pasteles</option><option>Café</option><option>Panadería</option>
+    </select>
+    <div class="db-live"><span class="live-dot"></span>En vivo</div>
+  </div>
+</div>
+
+<div class="db-tabs">
+  <button class="db-tab active" onclick="showSec('general',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> General</button>
+  <button class="db-tab" onclick="showSec('calidad',this)"><i class="ti ti-star" aria-hidden="true"></i> Calidad</button>
+  <button class="db-tab" onclick="showSec('comercial',this)"><i class="ti ti-chart-bar" aria-hidden="true"></i> Comercial</button>
+  <button class="db-tab" onclick="showSec('digital',this)"><i class="ti ti-brand-instagram" aria-hidden="true"></i> Digital</button>
+  <button class="db-tab" onclick="showSec('ops',this)"><i class="ti ti-boxes" aria-hidden="true"></i> Operaciones</button>
+  <button class="db-tab" onclick="showSec('bi',this)"><i class="ti ti-cpu" aria-hidden="true"></i> BI</button>
+</div>
+
+<!-- GENERAL -->
+<div class="section active" id="sec-general">
+  <div class="insight"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>Las ventas acumulan una caída del <strong>6%</strong> trimestral. Los reclamos de calidad subieron al <strong>12%</strong>, impactando la satisfacción del cliente (78%). Se recomienda revisión urgente de procesos de producción y calidad en sucursal San Miguel.</span></div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Ventas mensuales</div><div class="kpi-val" id="kv">$84,200</div></div><div class="kpi-icon"><i class="ti ti-cash" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-arrow-down-right" aria-hidden="true"></i> –6.0% vs trimestre ant.</div>
+      <div class="kpi-bar bar-red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Satisfacción cliente</div><div class="kpi-val" id="ks">78%</div></div><div class="kpi-icon"><i class="ti ti-mood-smile" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-arrow-down-right" aria-hidden="true"></i> –4pts vs meta 82%</div>
+      <div class="kpi-bar bar-amber"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Reclamos calidad</div><div class="kpi-val" id="kr">12%</div></div><div class="kpi-icon"><i class="ti ti-exclamation-circle" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-arrow-up-right" aria-hidden="true"></i> +3pts sobre meta 9%</div>
+      <div class="kpi-bar bar-red"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Engagement digital</div><div class="kpi-val" id="ke">4.5%</div></div><div class="kpi-icon"><i class="ti ti-heart" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-arrow-down-right" aria-hidden="true"></i> –1.2pts vs industria</div>
+      <div class="kpi-bar bar-blue"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Respuesta reclamos</div><div class="kpi-val" id="kre">36 hrs</div></div><div class="kpi-icon"><i class="ti ti-clock" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-clock" aria-hidden="true"></i> Meta: 24 hrs</div>
+      <div class="kpi-bar bar-amber"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div><div class="kpi-label">Crecimiento trim.</div><div class="kpi-val" id="kg">–6%</div></div><div class="kpi-icon"><i class="ti ti-trending-down" aria-hidden="true"></i></div></div>
+      <div class="kpi-trend t-down"><i class="ti ti-trending-down" aria-hidden="true"></i> Tendencia negativa</div>
+      <div class="kpi-bar bar-red"></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Ventas mensuales 2025</div><div class="card-desc">Ingresos en USD vs meta mensual</div></div><span class="card-badge">6 meses</span></div>
+      <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Ventas</span><span><span class="ld" style="background:#9393A0;border:1px dashed #9393A0"></span> Meta</span></div>
+      <div class="chart-wrap" style="height:210px;"><canvas id="cVentas" role="img" aria-label="Ventas mensuales LIDO 2025 con tendencia decreciente.">Ventas ene–jun 2025.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Satisfacción por sucursal</div><div class="card-desc">Puntuación media 0–100</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Score</span><span><span class="ld" style="background:#D2D2D6;border:1px dashed #9393A0"></span> Meta 82</span></div>
+      <div class="chart-wrap" style="height:210px;"><canvas id="cSatSuc" role="img" aria-label="Satisfacción por sucursal LIDO.">Multiplaza 83, Metrocentro 79, Santa Ana 76, San Miguel 72.</canvas></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Radar de KPIs estratégicos</div><div class="card-desc">Desempeño actual vs meta</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:rgba(200,16,46,0.6)"></span> Actual</span><span><span class="ld" style="background:rgba(147,147,160,0.4)"></span> Meta</span></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cRadar" role="img" aria-label="Radar KPIs LIDO vs meta.">6 dimensiones estratégicas.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Distribución de reclamos</div><div class="card-desc">Mayo 2025 — 214 reclamos totales</div></div></div>
+      <div class="legend" id="ldona"></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cDona" role="img" aria-label="Distribución de reclamos por tipo.">Sabor 38%, frescura 27%, presentación 21%, otros 14%.</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- CALIDAD -->
+<div class="section" id="sec-calidad">
+  <div class="insight"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>El <strong>cheesecake</strong> y el <strong>pastel tres leches</strong> concentran el 61% de reclamos. San Miguel registra la mayor tasa de defectos (17%). La tasa de recompra cayó a 41%, señalando pérdida de fidelización.</span></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">% Reclamos calidad</div><div class="kpi-val">12%</div></div><div class="kpi-icon"><i class="ti ti-exclamation-circle"></i></div></div><div class="kpi-trend t-down">Meta: 9%</div><div class="kpi-bar bar-red"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Satisfacción general</div><div class="kpi-val">78%</div></div><div class="kpi-icon"><i class="ti ti-mood-smile"></i></div></div><div class="kpi-trend t-down">–4pts vs meta 82%</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Tasa de recompra</div><div class="kpi-val">41%</div></div><div class="kpi-icon"><i class="ti ti-refresh"></i></div></div><div class="kpi-trend t-down">–9pts vs año ant.</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Productos defectuosos</div><div class="kpi-val">8.4%</div></div><div class="kpi-icon"><i class="ti ti-ban"></i></div></div><div class="kpi-trend t-down">Meta: 5%</div><div class="kpi-bar bar-red"></div></div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Reclamos por producto</div><div class="card-desc">Top 6 productos — mayo 2025</div></div></div>
+      <div class="chart-wrap" style="height:250px;"><canvas id="cReclProd" role="img" aria-label="Reclamos por producto LIDO.">Cheesecake 82, tres leches 49, frappes 37.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Tendencia de reclamos 2025</div><div class="card-desc">Evolución mensual del % de quejas</div></div></div>
+      <div class="chart-wrap" style="height:250px;"><canvas id="cTendRec" role="img" aria-label="Tendencia mensual reclamos 2025.">Subida progresiva de 7% en enero a 12% en mayo.</canvas></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div class="card-title">Comparativa de calidad por sucursal</div></div>
+    <table class="tbl">
+      <thead><tr><th>Sucursal</th><th>Satisfacción</th><th>% Reclamos</th><th>% Defectuosos</th><th>Frescura</th><th>Presentación</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Multiplaza</strong></td><td>83%<div class="pgb" style="margin-top:3px;"><div class="pgbf" style="width:83%;background:#4CAF50;"></div></div></td><td>9%</td><td>6%</td><td>Alta</td><td>Alta</td><td><span class="pill p-g">OK</span></td></tr>
+        <tr><td><strong>Metrocentro</strong></td><td>79%<div class="pgb" style="margin-top:3px;"><div class="pgbf" style="width:79%;background:#F59E0B;"></div></div></td><td>11%</td><td>8%</td><td>Media</td><td>Media</td><td><span class="pill p-a">Atención</span></td></tr>
+        <tr><td><strong>Santa Ana</strong></td><td>76%<div class="pgb" style="margin-top:3px;"><div class="pgbf" style="width:76%;background:#F59E0B;"></div></div></td><td>13%</td><td>9%</td><td>Baja</td><td>Media</td><td><span class="pill p-a">Atención</span></td></tr>
+        <tr><td><strong>San Miguel</strong></td><td>72%<div class="pgb" style="margin-top:3px;"><div class="pgbf" style="width:72%;background:#C8102E;"></div></div></td><td>17%</td><td>12%</td><td>Crítica</td><td>Baja</td><td><span class="pill p-r">Crítico</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- COMERCIAL -->
+<div class="section" id="sec-comercial">
+  <div class="insight"><i class="ti ti-trending-down" aria-hidden="true"></i><span>Multiplaza lidera con <strong>$28,400/mes</strong> pero desacelera. El ticket promedio bajó a <strong>$8.40</strong> (–$0.70 vs año anterior). Los frappes tienen baja rotación pese a popularidad en redes sociales.</span></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Crecimiento ventas</div><div class="kpi-val">–6%</div></div><div class="kpi-icon"><i class="ti ti-trending-down"></i></div></div><div class="kpi-trend t-down">Tendencia negativa</div><div class="kpi-bar bar-red"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Ticket promedio</div><div class="kpi-val">$8.40</div></div><div class="kpi-icon"><i class="ti ti-receipt"></i></div></div><div class="kpi-trend t-down">–$0.70 vs año ant.</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Rotación inventario</div><div class="kpi-val">4.2x</div></div><div class="kpi-icon"><i class="ti ti-refresh"></i></div></div><div class="kpi-trend t-down">Meta: 5.5x</div><div class="kpi-bar bar-gray"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Rentabilidad prod.</div><div class="kpi-val">31%</div></div><div class="kpi-icon"><i class="ti ti-coin"></i></div></div><div class="kpi-trend t-down">Meta: 35%</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Ventas totales</div><div class="kpi-val">$84,200</div></div><div class="kpi-icon"><i class="ti ti-cash"></i></div></div><div class="kpi-trend t-neu">4 sucursales</div><div class="kpi-bar bar-red"></div></div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Ventas por sucursal</div><div class="card-desc">Ingreso mensual — mayo 2025</div></div></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cVentaSuc" role="img" aria-label="Ventas por sucursal LIDO mayo 2025.">Multiplaza $28,400, Metrocentro $23,100, Santa Ana $18,600, San Miguel $14,100.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Productos más vendidos</div><div class="card-desc">Unidades vendidas — mayo 2025</div></div></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cProdVend" role="img" aria-label="Productos más vendidos LIDO.">Café americano 1420, croissant 1180, pastel chocolate 940.</canvas></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="card card-full">
+      <div class="card-header"><div><div class="card-title">Comparación Q1 vs Q2 por sucursal</div><div class="card-desc">Caída trimestral evidenciada en todas las sedes</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Q1 2025</span><span><span class="ld" style="background:#D2D2D6"></span> Q2 2025</span></div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="cCompTrim" role="img" aria-label="Q1 vs Q2 por sucursal.">Todas las sucursales muestran caída en Q2.</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIGITAL -->
+<div class="section" id="sec-digital">
+  <div class="insight"><i class="ti ti-brand-instagram" aria-hidden="true"></i><span>Instagram genera el <strong>54%</strong> de interacciones. TikTok crece +28% mensual. El <strong>31%</strong> de comentarios son negativos, con quejas de calidad y tiempo de espera como temas principales.</span></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Engagement Rate</div><div class="kpi-val">4.5%</div></div><div class="kpi-icon"><i class="ti ti-heart"></i></div></div><div class="kpi-trend t-down">Industria: 5.7%</div><div class="kpi-bar bar-blue"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Alcance mensual</div><div class="kpi-val">142K</div></div><div class="kpi-icon"><i class="ti ti-users"></i></div></div><div class="kpi-trend t-down">–8K vs abril</div><div class="kpi-bar bar-gray"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Interacciones</div><div class="kpi-val">6,390</div></div><div class="kpi-icon"><i class="ti ti-share"></i></div></div><div class="kpi-trend t-neu">3 plataformas</div><div class="kpi-bar bar-red"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Tasa de conversión</div><div class="kpi-val">1.8%</div></div><div class="kpi-icon"><i class="ti ti-arrow-right-circle"></i></div></div><div class="kpi-trend t-down">Meta: 3.0%</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Popularidad de marca</div><div class="kpi-val">62/100</div></div><div class="kpi-icon"><i class="ti ti-star"></i></div></div><div class="kpi-trend t-down">–5pts vs competencia</div><div class="kpi-bar bar-red"></div></div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Interacciones por plataforma</div><div class="card-desc">Distribución mayo 2025</div></div></div>
+      <div class="legend" id="lplat"></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cPlat" role="img" aria-label="Interacciones por plataforma.">Instagram 54%, Facebook 29%, TikTok 17%.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Sentimiento de comentarios</div><div class="card-desc">Positivos vs negativos — 30 días</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:#4CAF50"></span> Positivos 69%</span><span><span class="ld" style="background:#C8102E"></span> Negativos 31%</span></div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="cSent" role="img" aria-label="Sentimiento de comentarios.">Positivos 69%, negativos 31%.</canvas></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="card card-full">
+      <div class="card-header"><div><div class="card-title">Tendencia de reputación digital</div><div class="card-desc">Índice de sentimiento positivo neto (0–100) — últimos 6 meses</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Instagram</span><span><span class="ld" style="background:#5A5A66"></span> Facebook</span><span><span class="ld" style="background:#9393A0"></span> TikTok</span></div>
+      <div class="chart-wrap" style="height:190px;"><canvas id="cReputa" role="img" aria-label="Tendencia reputación digital LIDO.">Leve declive en todas las plataformas en Q2.</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- OPERACIONES -->
+<div class="section" id="sec-ops">
+  <div class="insight"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>El <strong>14%</strong> del inventario tiene riesgo de vencimiento en 48 horas. Las pérdidas operativas ascienden a <strong>$3,100/mes</strong>. San Miguel tiene el mayor tiempo de almacenamiento (4.8 días promedio).</span></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Días prom. almacenado</div><div class="kpi-val">3.6</div></div><div class="kpi-icon"><i class="ti ti-calendar"></i></div></div><div class="kpi-trend t-down">Meta: 2.5 días</div><div class="kpi-bar bar-amber"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Desperdicio producto</div><div class="kpi-val">9.1%</div></div><div class="kpi-icon"><i class="ti ti-trash"></i></div></div><div class="kpi-trend t-down">Meta: 5%</div><div class="kpi-bar bar-red"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Rotación inventario</div><div class="kpi-val">4.2x</div></div><div class="kpi-icon"><i class="ti ti-refresh"></i></div></div><div class="kpi-trend t-down">Meta: 5.5x</div><div class="kpi-bar bar-gray"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Pérdidas operativas</div><div class="kpi-val">$3,100</div></div><div class="kpi-icon"><i class="ti ti-coin-off"></i></div></div><div class="kpi-trend t-down">+$400 vs meta</div><div class="kpi-bar bar-red"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Productos en riesgo</div><div class="kpi-val">14%</div></div><div class="kpi-icon"><i class="ti ti-clock"></i></div></div><div class="kpi-trend t-down">Vence en 48h</div><div class="kpi-bar bar-red"></div></div>
+  </div>
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Inventario vs ventas reales</div><div class="card-desc">Unidades top 5 productos</div></div></div>
+      <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Inventario</span><span><span class="ld" style="background:#D2D2D6"></span> Ventas</span></div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="cInvVenta" role="img" aria-label="Inventario vs ventas por producto.">Cheesecake y tres leches muestran sobreinventario.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Rotación por sucursal</div><div class="card-desc">Índice rotación mensual (veces)</div></div></div>
+      <div class="chart-wrap" style="height:240px;"><canvas id="cRotSuc" role="img" aria-label="Rotación de inventario por sucursal.">Multiplaza 5.4x, San Miguel 2.9x.</canvas></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div class="card-title">Alertas — Productos próximos a vencer</div></div>
+    <table class="tbl">
+      <thead><tr><th>Producto</th><th>Sucursal</th><th>Unidades</th><th>Vence en</th><th>Acción sugerida</th></tr></thead>
+      <tbody>
+        <tr><td>Cheesecake fresa</td><td>San Miguel</td><td>28 uds</td><td><span class="pill p-r">24 hrs</span></td><td><span class="chip-alert"><i class="ti ti-bell"></i> Promoción urgente</span></td></tr>
+        <tr><td>Pastel tres leches</td><td>Santa Ana</td><td>14 uds</td><td><span class="pill p-r">36 hrs</span></td><td><span class="chip-alert"><i class="ti ti-bell"></i> Promoción urgente</span></td></tr>
+        <tr><td>Croissant mantequilla</td><td>Metrocentro</td><td>45 uds</td><td><span class="pill p-a">48 hrs</span></td><td><span class="pill p-a">Revisar stock</span></td></tr>
+        <tr><td>Frappe vainilla</td><td>San Miguel</td><td>12 uds</td><td><span class="pill p-a">48 hrs</span></td><td><span class="pill p-a">Revisar stock</span></td></tr>
+        <tr><td>Muffin arándano</td><td>Multiplaza</td><td>31 uds</td><td><span class="pill p-b">72 hrs</span></td><td><span class="pill p-g">Normal</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BI -->
+<div class="section" id="sec-bi">
+  <div class="insight"><i class="ti ti-cpu" aria-hidden="true"></i><span>LIDO puede reducir pérdidas operativas hasta un <strong>34%</strong> con un sistema BI centralizado. La automatización de reportes libera <strong>12 horas/semana</strong> y permite detección temprana de anomalías en tiempo real.</span></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Ahorro estimado BI</div><div class="kpi-val">–34%</div></div><div class="kpi-icon"><i class="ti ti-coin"></i></div></div><div class="kpi-trend t-up">En pérdidas operativas</div><div class="kpi-bar bar-green"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Horas libres/semana</div><div class="kpi-val">12 hrs</div></div><div class="kpi-icon"><i class="ti ti-clock"></i></div></div><div class="kpi-trend t-up">Automatización</div><div class="kpi-bar bar-green"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">KPIs monitoreados</div><div class="kpi-val">24</div></div><div class="kpi-icon"><i class="ti ti-chart-bar"></i></div></div><div class="kpi-trend t-neu">Tiempo real</div><div class="kpi-bar bar-blue"></div></div>
+    <div class="kpi"><div class="kpi-top"><div><div class="kpi-label">Alertas activas</div><div class="kpi-val">7</div></div><div class="kpi-icon"><i class="ti ti-bell-ringing"></i></div></div><div class="kpi-trend t-down">Requieren acción</div><div class="kpi-bar bar-red"></div></div>
+  </div>
+  <div class="bi-grid">
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-database" aria-hidden="true"></i></div><div class="bi-t">Centralización de datos</div><div class="bi-b">Unifica ventas, inventario, reclamos y redes en una sola plataforma. Elimina silos entre sucursales.</div></div>
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div><div class="bi-t">Reportes automáticos</div><div class="bi-b">Generación diaria sin intervención manual. Reducción del 80% en tiempo de elaboración de reportes.</div></div>
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div><div class="bi-t">Análisis predictivo</div><div class="bi-b">Modelos de demanda anticipan necesidades con 85% de precisión. Reducción de desperdicios: –42%.</div></div>
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-bell-ringing" aria-hidden="true"></i></div><div class="bi-t">Alertas inteligentes</div><div class="bi-b">Notificaciones automáticas ante caídas de satisfacción, sobreinventario o picos de reclamos.</div></div>
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-users" aria-hidden="true"></i></div><div class="bi-t">Segmentación de clientes</div><div class="bi-b">Identifica clientes recurrentes, ticket promedio y preferencias por sucursal para campañas dirigidas.</div></div>
+    <div class="bi-c"><div class="bi-icon"><i class="ti ti-eye" aria-hidden="true"></i></div><div class="bi-t">Monitoreo en tiempo real</div><div class="bi-b">Dashboard actualizado cada 15 min. Visibilidad completa de operaciones desde cualquier dispositivo.</div></div>
+  </div>
+  <div class="card card-full">
+    <div class="card-header"><div><div class="card-title">Impacto proyectado BI — Estado actual vs proyección</div><div class="card-desc">Comparativa de métricas clave con implementación de Business Intelligence</div></div></div>
+    <div class="legend"><span><span class="ld" style="background:#C8102E"></span> Estado actual</span><span><span class="ld" style="background:#4CAF50"></span> Con BI implementado</span></div>
+    <div class="chart-wrap" style="height:230px;"><canvas id="cBI" role="img" aria-label="Impacto BI en 6 KPIs LIDO.">Mejoras proyectadas en calidad, satisfacción, desperdicio, ventas, digital y rentabilidad.</canvas></div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+var RED='#C8102E',RDARK='#9B0C22',RLIGHT='rgba(200,16,46,0.15)',RGRID='rgba(200,16,46,0.25)';
+var GR1='#5A5A66',GR2='#9393A0',GR3='#D2D2D6',GRF='rgba(90,90,102,0.1)';
+var GREEN='#4CAF50',AMBER='#F59E0B',BLUE='#2563EB';
+
+var inited={};
+function showSec(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.db-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(()=>buildCharts(id),60);
+}
+function applyFilter(){
+  var s=document.getElementById('filterSuc').value;
+  var d={all:{v:'$84,200',s:'78%',r:'12%',re:'36 hrs',g:'–6%'},mpl:{v:'$28,400',s:'83%',r:'9%',re:'28 hrs',g:'–2%'},met:{v:'$23,100',s:'79%',r:'11%',re:'33 hrs',g:'–5%'},san:{v:'$18,600',s:'76%',r:'13%',re:'40 hrs',g:'–8%'},smg:{v:'$14,100',s:'72%',r:'17%',re:'44 hrs',g:'–12%'}};
+  var v=d[s]||d.all;
+  ['kv','ks','kr','kre','kg'].forEach(function(id,i){var el=document.getElementById(id);if(el)el.textContent=[v.v,v.s,v.r,v.re,v.g][i];});
+}
+function opts(extra){return Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(180,180,180,0.12)'},ticks:{color:GR1,font:{size:11}}},x:{grid:{display:false},ticks:{color:GR1,font:{size:11}}}}},extra||{});}
+function buildCharts(s){
+  if(inited[s])return; inited[s]=true;
+  if(s==='general'){
+    new Chart(document.getElementById('cVentas'),{type:'bar',data:{labels:['Ene','Feb','Mar','Abr','May','Jun'],datasets:[{data:[92100,89400,87800,86200,84200,81000],backgroundColor:RED,borderRadius:5},{label:'Meta',data:[92000,92000,92000,92000,92000,92000],type:'line',borderColor:GR2,borderDash:[5,3],pointRadius:0,fill:false,borderWidth:1.5}]},options:opts({scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+    new Chart(document.getElementById('cSatSuc'),{type:'bar',data:{labels:['Multiplaza','Metrocentro','Santa Ana','San Miguel'],datasets:[{data:[83,79,76,72],backgroundColor:[GREEN,AMBER,AMBER,RED],borderRadius:5},{label:'Meta',data:[82,82,82,82],type:'line',borderColor:GR2,borderDash:[5,3],pointRadius:0,fill:false,borderWidth:1.5}]},options:opts({scales:{y:{min:60,max:100,ticks:{callback:v=>v+'%',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+    new Chart(document.getElementById('cRadar'),{type:'radar',data:{labels:['Ventas','Calidad','Digital','Inventario','Satisfacción','Rentabilidad'],datasets:[{data:[64,58,55,62,78,71],backgroundColor:'rgba(200,16,46,0.15)',borderColor:RED,pointBackgroundColor:RED,borderWidth:2},{data:[80,80,80,80,82,80],backgroundColor:'rgba(147,147,160,0.08)',borderColor:GR3,pointBackgroundColor:GR3,borderDash:[4,3],borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{stepSize:20,font:{size:10},color:GR2},grid:{color:'rgba(180,180,180,0.15)'},pointLabels:{color:GR1,font:{size:11}}}}}});
+    var dd=[38,27,21,14],dl=['Sabor','Frescura','Presentación','Otros'],dc=[RED,AMBER,BLUE,GR2];
+    document.getElementById('ldona').innerHTML=dl.map((l,i)=>`<span style="display:flex;align-items:center;gap:4px;"><span class="ld" style="background:${dc[i]}"></span>${l} ${dd[i]}%</span>`).join('');
+    new Chart(document.getElementById('cDona'),{type:'doughnut',data:{labels:dl,datasets:[{data:dd,backgroundColor:dc,borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+  }
+  if(s==='calidad'){
+    new Chart(document.getElementById('cReclProd'),{type:'bar',data:{labels:['Cheesecake','Tres leches','Frappes','Croissant','P. Chocolate','Otros'],datasets:[{data:[82,49,37,21,16,9],backgroundColor:[RED,RED,AMBER,AMBER,BLUE,GR2],borderRadius:4}]},options:opts({indexAxis:'y'})});
+    new Chart(document.getElementById('cTendRec'),{type:'line',data:{labels:['Ene','Feb','Mar','Abr','May'],datasets:[{data:[7,8,9,11,12],borderColor:RED,backgroundColor:'rgba(200,16,46,0.08)',fill:true,tension:0.4,pointBackgroundColor:RED,pointRadius:4,borderWidth:2}]},options:opts({scales:{y:{ticks:{callback:v=>v+'%',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+  }
+  if(s==='comercial'){
+    new Chart(document.getElementById('cVentaSuc'),{type:'bar',data:{labels:['Multiplaza','Metrocentro','Santa Ana','San Miguel'],datasets:[{data:[28400,23100,18600,14100],backgroundColor:[RED,GR1,GR2,GR3],borderRadius:5}]},options:opts({scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+    new Chart(document.getElementById('cProdVend'),{type:'bar',data:{labels:['Café amer.','Croissant','P. Choco.','Tres leches','Frappe'],datasets:[{data:[1420,1180,940,820,710],backgroundColor:[RED,RED,AMBER,AMBER,GR2],borderRadius:5}]},options:opts({scales:{y:{grid:{color:'rgba(180,180,180,0.12)'},ticks:{color:GR1}},x:{grid:{display:false},ticks:{color:GR1,font:{size:11}}}}})});
+    new Chart(document.getElementById('cCompTrim'),{type:'bar',data:{labels:['Multiplaza','Metrocentro','Santa Ana','San Miguel'],datasets:[{label:'Q1',data:[31200,25400,20100,16200],backgroundColor:RED,borderRadius:3},{label:'Q2',data:[28400,23100,18600,14100],backgroundColor:GR3,borderRadius:3}]},options:opts({scales:{y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+  }
+  if(s==='digital'){
+    var pd=[54,29,17],pl=['Instagram','Facebook','TikTok'],pc=[RED,GR1,AMBER];
+    document.getElementById('lplat').innerHTML=pl.map((l,i)=>`<span style="display:flex;align-items:center;gap:4px;"><span class="ld" style="background:${pc[i]}"></span>${l} ${pd[i]}%</span>`).join('');
+    new Chart(document.getElementById('cPlat'),{type:'pie',data:{labels:pl,datasets:[{data:pd,backgroundColor:pc,borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+    new Chart(document.getElementById('cSent'),{type:'doughnut',data:{labels:['Positivos','Negativos'],datasets:[{data:[69,31],backgroundColor:[GREEN,RED],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+    new Chart(document.getElementById('cReputa'),{type:'line',data:{labels:['Dic','Ene','Feb','Mar','Abr','May'],datasets:[{label:'Instagram',data:[74,72,71,70,68,67],borderColor:RED,tension:0.4,pointRadius:3,borderWidth:2,fill:false},{label:'Facebook',data:[71,70,69,68,66,65],borderColor:GR1,tension:0.4,pointRadius:3,borderWidth:2,fill:false},{label:'TikTok',data:[68,70,72,71,70,72],borderColor:AMBER,tension:0.4,pointRadius:3,borderWidth:2,fill:false}]},options:opts({scales:{y:{min:55,max:85,grid:{color:'rgba(180,180,180,0.12)'},ticks:{color:GR1}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+  }
+  if(s==='ops'){
+    new Chart(document.getElementById('cInvVenta'),{type:'bar',data:{labels:['Cheesecake','Tres leches','Croissant','Café','Frappe'],datasets:[{label:'Inventario',data:[340,280,190,520,210],backgroundColor:RED,borderRadius:3},{label:'Ventas',data:[258,214,180,500,195],backgroundColor:GR3,borderRadius:3}]},options:opts({scales:{y:{grid:{color:'rgba(180,180,180,0.12)'},ticks:{color:GR1}},x:{grid:{display:false},ticks:{color:GR1,font:{size:11}}}}})});
+    new Chart(document.getElementById('cRotSuc'),{type:'bar',data:{labels:['Multiplaza','Metrocentro','Santa Ana','San Miguel'],datasets:[{data:[5.4,4.8,3.9,2.9],backgroundColor:[GREEN,AMBER,AMBER,RED],borderRadius:5}]},options:opts({scales:{y:{max:7,ticks:{callback:v=>v+'x',color:GR1},grid:{color:'rgba(180,180,180,0.12)'}},x:{grid:{display:false},ticks:{color:GR1}}}})});
+  }
+  if(s==='bi'){
+    new Chart(document.getElementById('cBI'),{type:'radar',data:{labels:['Calidad','Satisfacción','Desperdicio','Ventas','Digital','Rentabilidad'],datasets:[{label:'Actual',data:[58,78,41,64,55,71],backgroundColor:'rgba(200,16,46,0.15)',borderColor:RED,pointBackgroundColor:RED,borderWidth:2},{label:'Con BI',data:[80,88,75,82,74,85],backgroundColor:'rgba(76,175,80,0.12)',borderColor:GREEN,pointBackgroundColor:GREEN,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:10},color:GR2},grid:{color:'rgba(180,180,180,0.15)'},pointLabels:{color:GR1,font:{size:11}}}}}});
+  }
+}
+window.addEventListener('DOMContentLoaded',function(){buildCharts('general');});
+setTimeout(function(){if(!inited['general'])buildCharts('general');},250);
+</script>
